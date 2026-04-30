@@ -54,7 +54,7 @@ const Startsida = ({ onNavigate }) => {
             transition: 'all 0.8s var(--ease-out)',
           }}>
             <img src="img/logo-white.png" alt="Babel Deli" style={{
-              height: 400, width: 'auto',
+              height: 320, width: 'auto',
               filter: 'drop-shadow(0 4px 32px rgba(0,0,0,0.5))',
               display: 'block', margin: '0 auto var(--space-sm)',
             }} />
