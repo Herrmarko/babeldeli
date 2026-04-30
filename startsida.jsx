@@ -28,7 +28,7 @@ const Startsida = ({ onNavigate }) => {
     <div className="page-enter">
       {/* ─── HERO ─── */}
       <section style={{
-        minHeight: '92vh', display: 'flex', alignItems: 'flex-end',
+        minHeight: '92vh', display: 'flex', alignItems: 'center',
         position: 'relative', overflow: 'hidden',
         background: 'var(--color-dark)',
       }}>
@@ -47,14 +47,14 @@ const Startsida = ({ onNavigate }) => {
           }}/>
         </div>
 
-        <div className="container" style={{ position: 'relative', zIndex: 2, paddingBottom: 'clamp(3rem, 8vh, 6rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+        <div className="container" style={{ position: 'relative', zIndex: 2, paddingTop: 'clamp(2rem, 6vh, 4rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           {/* Logo centered */}
           <div style={{
             opacity: heroLoaded ? 1 : 0, transform: heroLoaded ? 'translateY(0)' : 'translateY(30px)',
             transition: 'all 0.8s var(--ease-out)',
           }}>
             <img src="img/logo-white.png" alt="Babel Deli" style={{
-              height: 'clamp(160px, 24vh, 240px)', width: 'auto', marginBottom: 'var(--space-lg)',
+              height: 340, width: 'auto', marginBottom: 'var(--space-lg)',
               filter: 'drop-shadow(0 4px 32px rgba(0,0,0,0.5))',
               display: 'block', margin: '0 auto var(--space-lg)',
             }} />
