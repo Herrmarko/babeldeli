@@ -52,6 +52,7 @@ const Startsida = ({ onNavigate }) => {
           <div style={{
             opacity: heroLoaded ? 1 : 0, transform: heroLoaded ? 'translateY(0)' : 'translateY(30px)',
             transition: 'all 0.8s var(--ease-out)',
+            marginTop: 'var(--space-md)',
           }}>
             <img src="img/logo-white.png" alt="Babel Deli" style={{
               height: 320, width: 'auto',
@@ -72,7 +73,7 @@ const Startsida = ({ onNavigate }) => {
             opacity: heroLoaded ? 1 : 0, transform: heroLoaded ? 'translateY(0)' : 'translateY(20px)',
             transition: 'all 0.8s 0.2s var(--ease-out)',
           }}>
-            <p style={{ color: 'rgba(251,247,241,0.75)', fontSize: '1.0625rem', marginBottom: 'var(--space-lg)', maxWidth: 460 }}>
+            <p style={{ color: 'rgba(251,247,241,0.75)', fontSize: '1.0625rem', marginBottom: 'var(--space-md)', maxWidth: 460 }}>
               Libanesisk mezebar &amp; catering med autentiska smaker lagade med kärlek och de bästa råvarorna.
             </p>
           </div>
