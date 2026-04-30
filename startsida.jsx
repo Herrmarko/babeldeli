@@ -47,7 +47,7 @@ const Startsida = ({ onNavigate }) => {
           }}/>
         </div>
 
-        <div className="container" style={{ position: 'relative', zIndex: 2, paddingTop: 'clamp(2rem, 8vh, 5rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+        <div className="container" style={{ position: 'relative', zIndex: 2, paddingTop: 'clamp(1rem, 4vh, 3rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           {/* Logo centered */}
           <div style={{
             opacity: heroLoaded ? 1 : 0, transform: heroLoaded ? 'translateY(0)' : 'translateY(30px)',
