@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Babel Deli — Libanesisk mezebar & catering i Vasastan</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="components.jsx"></script>
+  <script type="text/babel" src="startsida.jsx"></script>
+  <script type="text/babel" src="meny.jsx"></script>
+  <script type="text/babel" src="catering.jsx"></script>
+  <script type="text/babel" src="order-forms.jsx"></script>
+  <script type="text/babel" src="foretagscatering.jsx"></script>
+  <script type="text/babel" src="privatcatering.jsx"></script>
+  <script type="text/babel" src="frukostcatering.jsx"></script>
+  <script type="text/babel" src="kontakt.jsx"></script>
+  <script type="text/babel" src="event.jsx"></script>
+
+
+  <script type="text/babel">
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "primaryColor": "#1A8C7E",
+      "accentColor": "#E2A63B",
+      "oliveColor": "#C24D2C",
+      "creamBg": "#FBF7F1",
+      "fontDisplay": "Cormorant Garamond",
+      "fontBody": "Outfit",
+      "borderRadius": 12
+    }/*EDITMODE-END*/;
+
+    const App = () => {
+      const [page, setPage] = React.useState(() => {
+        const h = window.location.hash.slice(1);
+        return h || localStorage.getItem('babel-page') || 'hem';
+      });
+      const [tweaks, setTweaks] = React.useState(TWEAK_DEFAULTS);
+      const [tweaksVisible, setTweaksVisible] = React.useState(false);
+
+      // Apply tweaks as CSS vars
+      React.useEffect(() => {
+        const root = document.documentElement;
+        root.style.setProperty('--color-terracotta', tweaks.primaryColor);
+        root.style.setProperty('--color-saffron', tweaks.accentColor);
+        root.style.setProperty('--color-olive', tweaks.oliveColor);
+        root.style.setProperty('--color-cream', tweaks.creamBg);
+        root.style.setProperty('--font-display', `'${tweaks.fontDisplay}', Georgia, serif`);
+        root.style.setProperty('--font-body', `'${tweaks.fontBody}', system-ui, sans-serif`);
+        root.style.setProperty('--radius-md', `${tweaks.borderRadius}px`);
+        document.body.style.background = tweaks.creamBg;
+      }, [tweaks]);
+
+      const navigate = React.useCallback((p) => {
+        setPage(p);
+        window.location.hash = p;
+        localStorage.setItem('babel-page', p);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }, []);
+
+      React.useEffect(() => {
+        const h = () => {
+          const p = window.location.hash.slice(1);
+          if (p) setPage(p);
+        };
+        window.addEventListener('hashchange', h);
+        return () => window.removeEventListener('hashchange', h);
+      }, []);
+
+      // Tweaks edit mode
+      React.useEffect(() => {
+        const handler = (e) => {
+          if (e.data?.type === '__activate_edit_mode') setTweaksVisible(true);
+          if (e.data?.type === '__deactivate_edit_mode') setTweaksVisible(false);
+        };
+        window.addEventListener('message', handler);
+        window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+        return () => window.removeEventListener('message', handler);
+      }, []);
+
+      const updateTweak = (key, val) => {
+        const next = { ...tweaks, [key]: val };
+        setTweaks(next);
+        window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { [key]: val } }, '*');
+      };
+
+      const renderPage = () => {
+        switch (page) {
+          case 'meny': return <Meny onNavigate={navigate} />;
+          case 'catering': return <Catering onNavigate={navigate} />;
+          case 'kontakt': return <Kontakt onNavigate={navigate} />;
+          case 'foretagscatering': return <Foretagscatering onNavigate={navigate} />;
+          case 'privatcatering': return <Privatcatering onNavigate={navigate} />;
+          case 'frukostcatering': return <Frukostcatering onNavigate={navigate} />;
+          case 'event': return <Event onNavigate={navigate} />;
+          default: return <Startsida onNavigate={navigate} />;
+        }
+      };
+
+      return (
+        <>
+          <Nav currentPage={page} onNavigate={navigate} />
+          <main key={page}>{renderPage()}</main>
+          <Footer onNavigate={navigate} />
+
+          {/* Tweaks Panel */}
+          {tweaksVisible && (
+            <div style={{
+              position: 'fixed', bottom: 20, right: 20, zIndex: 9999,
+              width: 280, background: 'white', borderRadius: 16,
+              boxShadow: '0 8px 40px rgba(0,0,0,0.15)', padding: '1.25rem',
+              fontFamily: 'var(--font-body)', fontSize: '0.8rem',
+              maxHeight: '80vh', overflowY: 'auto',
+            }}>
+              <div style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: '1rem' }}>Tweaks</div>
+
+              {/* Colors */}
+              {[
+                ['primaryColor', 'Primary (terracotta)'],
+                ['accentColor', 'Accent (saffron)'],
+                ['oliveColor', 'Secondary (olive)'],
+                ['creamBg', 'Background'],
+              ].map(([key, label]) => (
+                <div key={key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
+                  <span>{label}</span>
+                  <input type="color" value={tweaks[key]} onChange={e => updateTweak(key, e.target.value)}
+                    style={{ width: 32, height: 24, border: 'none', cursor: 'pointer', borderRadius: 4 }} />
+                </div>
+              ))}
+
+              <div style={{ borderTop: '1px solid #eee', margin: '0.75rem 0' }} />
+
+              {/* Font Display */}
+              <div style={{ marginBottom: '0.6rem' }}>
+                <div style={{ marginBottom: '0.3rem' }}>Display font</div>
+                <select value={tweaks.fontDisplay} onChange={e => updateTweak('fontDisplay', e.target.value)}
+                  style={{ width: '100%', padding: '0.4rem', borderRadius: 6, border: '1px solid #ddd', fontSize: '0.8rem' }}>
+                  {['Cormorant Garamond', 'Playfair Display', 'Lora', 'Libre Baskerville', 'DM Serif Display'].map(f =>
+                    <option key={f} value={f}>{f}</option>
+                  )}
+                </select>
+              </div>
+
+              {/* Font Body */}
+              <div style={{ marginBottom: '0.6rem' }}>
+                <div style={{ marginBottom: '0.3rem' }}>Body font</div>
+                <select value={tweaks.fontBody} onChange={e => updateTweak('fontBody', e.target.value)}
+                  style={{ width: '100%', padding: '0.4rem', borderRadius: 6, border: '1px solid #ddd', fontSize: '0.8rem' }}>
+                  {['Outfit', 'DM Sans', 'Figtree', 'Source Sans 3', 'Nunito Sans'].map(f =>
+                    <option key={f} value={f}>{f}</option>
+                  )}
+                </select>
+              </div>
+
+              <div style={{ borderTop: '1px solid #eee', margin: '0.75rem 0' }} />
+
+              {/* Border radius */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+                  <span>Border radius</span>
+                  <span>{tweaks.borderRadius}px</span>
+                </div>
+                <input type="range" min="0" max="24" value={tweaks.borderRadius}
+                  onChange={e => updateTweak('borderRadius', parseInt(e.target.value))}
+                  style={{ width: '100%' }} />
+              </div>
+
+              {/* Preset palettes */}
+              <div style={{ borderTop: '1px solid #eee', margin: '0.75rem 0' }} />
+              <div style={{ marginBottom: '0.3rem', fontWeight: 600 }}>Quick palettes</div>
+              {[
+                { name: 'Babel Teal (default)', primary: '#1A8C7E', accent: '#E2A63B', olive: '#C24D2C', bg: '#FBF7F1' },
+                { name: 'Warm terracotta', primary: '#C24D2C', accent: '#E2A63B', olive: '#1A8C7E', bg: '#FBF7F1' },
+                { name: 'Deep olive', primary: '#5C6E3B', accent: '#D4A853', olive: '#8A6B3E', bg: '#F7F5EF' },
+                { name: 'Berry warm', primary: '#9B3A5A', accent: '#E8B04A', olive: '#6E7F42', bg: '#FBF5F2' },
+              ].map(p => (
+                <button key={p.name} onClick={() => {
+                  updateTweak('primaryColor', p.primary);
+                  updateTweak('accentColor', p.accent);
+                  updateTweak('oliveColor', p.olive);
+                  updateTweak('creamBg', p.bg);
+                  setTweaks(prev => ({ ...prev, primaryColor: p.primary, accentColor: p.accent, oliveColor: p.olive, creamBg: p.bg }));
+                }} style={{
+                  display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%',
+                  padding: '0.4rem 0.5rem', borderRadius: 8, border: 'none', background: 'transparent',
+                  cursor: 'pointer', fontSize: '0.75rem', textAlign: 'left',
+                  transition: 'background 0.2s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = '#f5f5f5'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                  <div style={{ display: 'flex', gap: 2 }}>
+                    {[p.primary, p.accent, p.olive, p.bg].map((c, i) => (
+                      <div key={i} style={{ width: 14, height: 14, borderRadius: 3, background: c, border: '1px solid rgba(0,0,0,0.1)' }} />
+                    ))}
+                  </div>
+                  {p.name}
+                </button>
+              ))}
+            </div>
+          )}
+        </>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
