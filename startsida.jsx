@@ -28,7 +28,7 @@ const Startsida = ({ onNavigate }) => {
     <div className="page-enter">
       {/* ─── HERO ─── */}
       <section style={{
-        minHeight: '92vh', display: 'flex', alignItems: 'flex-end',
+        minHeight: '92vh', display: 'flex', alignItems: 'center',
         position: 'relative', overflow: 'hidden',
         background: 'var(--color-dark)',
       }}>
@@ -47,7 +47,7 @@ const Startsida = ({ onNavigate }) => {
           }}/>
         </div>
 
-        <div className="container" style={{ position: 'relative', zIndex: 2, paddingBottom: 'clamp(2rem, 6vh, 4rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+        <div className="container" style={{ position: 'relative', zIndex: 2, paddingTop: 'clamp(4rem, 14vh, 10rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           {/* Logo centered */}
           <div style={{
             opacity: heroLoaded ? 1 : 0, transform: heroLoaded ? 'translateY(0)' : 'translateY(30px)',
